@@ -1,4 +1,3 @@
-
 def buildAndPushDocker(workingdir, appname) {
     withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIAL', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_LOGIN')]) {
         sh "cd $workingdir && docker build -t $appname . && " +
@@ -10,13 +9,13 @@ def buildAndPushDocker(workingdir, appname) {
 
 def kubectl(opt, namespace) {
     withCredentials ( [string(credentialsId: 'K8S_TOKEN', variable: 'K8S_TOKEN')] ) {
-        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace "
+        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace"
     }
 }
 
 
 def deploy() {
-    echo "Put your deployment code here"
+    kubectl('apply -f .', 'sami')
 }
 
 pipeline {
@@ -27,23 +26,24 @@ pipeline {
                 stage('database') {
                     agent any
                     steps {
-                        buildAndPushDocker('bdd', 'k8s-bdd')
+                        buildAndPushDocker('bdd', 'bdd-mysql-k8s')
                     }
                 }
                 stage('api') {
                     agent any
                     steps {
-                        buildAndPushDocker('tutoapi', 'k8s-api')
+                        buildAndPushDocker('tutoapi', 'api-k8s')
                     }
                 }
             }
         }
 
         stage('Deploy on K8s') {
-            agent any
+            agent { docker { image 'bitnami/kubectl' } }
             steps {
                 deploy()
             }
         }
     }
 }
+
