@@ -14,10 +14,22 @@ def kubectl(opt, namespace) {
     }
 }
 
-
 def deploy() {
     kubectl('apply -f k8s', 'sami')
 }
+
+def helm(opt) {
+    withCredentials([file(credentialsId: 'CONFIG_K8S', variable: 'CONFIG_K8S')]) {
+        sh "helm --kubeconfig $CONFIG_K8S $opt"
+    }
+}
+
+def deploy_helm() {
+    helm("upgrade aplication Helm")
+}
+
+
+
 
 pipeline {
     agent none
@@ -52,14 +64,13 @@ pipeline {
 
         stage('Deploy on K8s with Helm Chart') {
             agent { docker {
-              image 'alpine/helm'
+              image 'bitnami/kubectl'
               args '--entrypoint='
             } }
             steps {
-                sh "export KUBERNETES_MASTER=https://104.199.68.113"
-                sh "helm install --debug final Helm"
+                deploy_helm()
             }
-        }
-        
+
     }
 }
+
