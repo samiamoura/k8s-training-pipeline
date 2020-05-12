@@ -71,20 +71,27 @@ pipeline {
 
         stage('Ensure api is deployed and test it') {
             agent any
+            stages {
 
-            steps {
-              echo "Ensure application is deploy"
-              sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
-
-              echo "Ensure application is deploy"
-
-              def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
-
-              if (result !== "Hello you!"){
-                sh "exit 1"
+              stage("Ensure application is deploy") {
+                steps {
+                  echo "Ensure application is deploy"
+                  sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
+                }
               }
-           }
+
+             stage("Install ansible role dependencies") {
+                steps {
+                  def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
+
+                  if (result !== "Hello you!"){
+                    sh "exit 1"
+                  }
+                }
+             }
+          }
         }
+
 
         /*
         stage('Undeploy application') {
