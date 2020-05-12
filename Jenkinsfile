@@ -13,9 +13,10 @@ def kubectl(opt, namespace) {
     }
 }
 
-def deploy() {
+def deployKubectl() {
     kubectl('apply -f k8s', 'sami')
 }
+
 
 def helm(opt) {
     withCredentials([file(credentialsId: 'CONFIG_K8S', variable: 'CONFIG_K8S')]) {
@@ -23,7 +24,7 @@ def helm(opt) {
     }
 }
 
-def action_helm(opt, chart) {
+def actionHelm(opt, chart) {
     helm("$opt application $chart")
 }
 
@@ -54,7 +55,7 @@ pipeline {
               args '--entrypoint='
             } }
             steps {
-                deploy()
+                deployKubectl()
             }
         }*/
 
@@ -65,32 +66,19 @@ pipeline {
             } }
 
             steps {
-              action_helm('install', 'Helm')
+              actionHelm('install', 'Helm')
             }
         }
 
         stage('Ensure api is deployed and test it') {
             agent any
-            stages {
-
               stage("Ensure application is deploy") {
                 steps {
                   echo "Ensure application is deploy"
                   sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
                 }
-              }
-
-             stage("Install ansible role dependencies") {
-                steps {
-                  def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
-
-                  if (result !== "Hello you!"){
-                    sh "exit 1"
-                  }
-                }
              }
           }
-        }
 
 
         /*
@@ -101,7 +89,7 @@ pipeline {
             } }
 
             steps {
-              action_helm('uninstall','')
+              actionHelm('uninstall','')
             }
         }*/
     }
