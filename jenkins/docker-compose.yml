@@ -1,0 +1,10 @@
+version: '3'
+services:
+  jenkins:
+    image: jenkinsci/blueocean:latest
+    ports:
+      - 9085:8080
+    user: root # it is a bad practice, but it is the easiest way to give right on docker.sock on all OS
+    volumes:
+      - ./jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,10 @@
+
+tutoapi/node_modules/*
+
+tutoapi/package-lock\.json
+
+.idea
+
+*.iml
+
+jenkins/jenkins_data

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-api
+  namespace: sami
+  labels:
+    app: training-k8s
+    tier: api
+spec:
+  selector:
+    matchLabels:
+      app: training-k8s
+      tier: api
+  template:
+    metadata:
+      labels:
+        app: training-k8s
+        tier: api
+    spec:
+      initContainers:
+      - name: init-wait-db
+        image: mysql
+        command: ["mysqladmin","ping","-h", tuto-bdd]
+      containers:
+      - name: tutoapi-img
+        image: samiamr/api-k8s
+        imagePullPolicy: Always
+        env:
+        - name: MYSQL_HOST
+          value: svc-bdd 
+        - name: MYSQL_USER
+          value: root
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+             name: mysql-password
+             key: password
+        - name: MYSQL_DATABASE
+          value: workshop
+      dnsPolicy: ClusterFirst

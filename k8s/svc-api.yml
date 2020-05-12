@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-api
+  namespace: sami
+  labels:
+    app: training-k8s
+    tier: api
+spec:
+  type: ClusterIP
+  selector:
+    app: training-k8s
+    tier: api
+  ports:
+  - protocol: TCP
+    port: 3000

@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-bdd
+  namespace: sami
+  labels:
+    app: training-k8s
+    tier: bdd
+spec:
+  type: ClusterIP
+  selector:
+    app: training-k8s
+    tier: bdd
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306

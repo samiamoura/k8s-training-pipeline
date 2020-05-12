@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: hello-ingress-with-dns
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: nicolas.formationk8.projet-davidson.fr # if you don't have dns open, you can use nicolas.info, and use curl nicolas.info to check if it's work
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: hello
+              servicePort: 8080
