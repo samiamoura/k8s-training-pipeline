@@ -64,11 +64,11 @@ pipeline {
               args '--entrypoint='
             } }
             steps {
-                action_helm(install, Helm)
+                action_helm('install', 'Helm')
             
 
                 sh label: '', script: 'bash -c \'while [[ \'$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr/)\' != "200" ]]; do sleep 5; done\''
-                action_helm(uninstall,'')
+                action_helm('uninstall','')
             }
        }
     }
