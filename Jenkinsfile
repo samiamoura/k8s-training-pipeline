@@ -72,7 +72,7 @@ pipeline {
         stage('Test application') {
             agent any
             steps {
-		sh label: '', script: 'bash -c \'while [[ \'$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr/)\' != \'200\' ]]; do sleep 5; done\''
+		sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
             }
         }
 
