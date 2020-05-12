@@ -24,8 +24,8 @@ def helm(opt) {
     }
 }
 
-def deploy_helm() {
-    helm("install aplication Helm")
+def action_helm(opt, chart) {
+    helm("$opt aplication $chart")
 }
 
 
@@ -68,7 +68,15 @@ pipeline {
               args '--entrypoint='
             } }
             steps {
-                deploy_helm()
+                action_helm(install, Helm)
+            }
+            
+            steps {
+               sh "bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://api-sami.formationk8.projet-davidson.fr/)" != "200" ]]; do sleep 5; done'"
+            }
+
+            steps {
+                action_helm(uninstall,'')
             }
        }
     }
