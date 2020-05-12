@@ -58,18 +58,34 @@ pipeline {
             }
         }*/
 
-        stage('Deploy on K8s with Helm Chart') {
+        stage('Deploy on K8s with Helm') {
             agent { docker {
               image 'alpine/helm'
               args '--entrypoint='
             } }
-            steps {
-                action_helm('install', 'Helm')
-            
 
-                sh label: '', script: 'bash -c \'while [[ \'$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr/)\' != "200" ]]; do sleep 5; done\''
-                action_helm('uninstall','')
+            steps {
+              action_helm('install', 'Helm')
             }
-       }
+        }
+
+        stage('Test application') {
+            agent any
+            steps {
+              sh label: '', script: 'bash -c \'while [[ \'$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr/)\' != "200" ]]; do sleep 5; done\''
+            }
+        }
+
+        stage('Undeploy application') {
+            agent { docker {
+              image 'alpine/helm'
+              args '--entrypoint='
+            } }
+
+            steps {
+              action_helm('uninstall','')
+            }
+        }
     }
 }
+
