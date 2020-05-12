@@ -69,13 +69,23 @@ pipeline {
             }
         }
 
-        stage('Test application') {
+        stage('Ensure api is deployed and test it') {
             agent any
             steps {
-		sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
-            }
+              echo "Ensure application is deploy"
+              sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
+
+              echo "Ensure application is deploy"
+
+              def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
+
+              if (result != "Hello you!"){
+                exit 1 
+              }
+           }
         }
 
+        /*
         stage('Undeploy application') {
             agent { docker {
               image 'alpine/helm'
@@ -85,7 +95,6 @@ pipeline {
             steps {
               action_helm('uninstall','')
             }
-        }
+        }*/
     }
 }
-
