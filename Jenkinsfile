@@ -53,7 +53,7 @@ pipeline {
         stage('Deploy on K8s with Helm Chart') {
             agent { docker {
               image 'alpine/helm'
-              
+              args '--entrypoint='
             } }
             steps {
                 sh "helm install --debug final Helm"
