@@ -80,7 +80,7 @@ pipeline {
 
               def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
 
-              if (result =! "Hello you!"){
+              if (result !== "Hello you!"){
                 sh "exit 1"
               }
            }
