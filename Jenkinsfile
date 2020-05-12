@@ -70,7 +70,7 @@ pipeline {
             steps {
                 deploy_helm()
             }
-
+       }
     }
 }
 
