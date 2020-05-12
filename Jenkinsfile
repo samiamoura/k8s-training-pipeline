@@ -1,4 +1,3 @@
-
 def buildAndPushDocker(workingdir, appname) {
     withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIAL', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_LOGIN')]) {
         sh "cd $workingdir && docker build -t $appname . && " +
@@ -27,9 +26,6 @@ def helm(opt) {
 def action_helm(opt, chart) {
     helm("$opt application $chart")
 }
-
-
-
 
 pipeline {
     agent none
@@ -70,9 +66,9 @@ pipeline {
             steps {
                 action_helm(install, Helm)
             }
-            
+
             steps {
-               sh "bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://api-sami.formationk8.projet-davidson.fr/)" != "200" ]]; do sleep 5; done'"
+               sh "bash -c 'while [[ '$(curl -s -o /dev/null -w ''%{http_code}'' http://api-sami.formationk8.projet-davidson.fr/)' != "200" ]]; do sleep 5; done'"
             }
 
             steps {
@@ -81,4 +77,3 @@ pipeline {
        }
     }
 }
-
