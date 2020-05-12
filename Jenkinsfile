@@ -25,7 +25,7 @@ def helm(opt) {
 }
 
 def deploy_helm() {
-    helm("upgrade aplication Helm")
+    helm("install aplication Helm")
 }
 
 
