@@ -1,0 +1,20 @@
+# Default values for Helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+#
+namespace: sami
+
+database:
+  username: root
+  password: root
+
+bdd:
+  serviceName: svc-bdd
+  port: 3306
+
+api:
+  serviceName: svc-api
+  port: 3000
+
+hostIngressName: api-sami.formationk8

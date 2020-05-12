@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-bdd
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: training-k8s
+    tier: bdd
+spec: 
+  selector:
+    matchLabels:
+      app: training-k8s
+      tier: bdd
+  template:
+    metadata:
+      labels:
+        app: training-k8s
+        tier: bdd
+    spec:
+      containers:
+      - name: tutobdd-img
+        image: samiamr/bdd-mysql-k8s
+        imagePullPolicy: Always
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.database.password | b64enc | quote }}
+        volumeMounts:
+        - mountPath: /bitnami/mysql/data
+          name: storagemysql
+      volumes:
+        - name: storagemysql
+          persistentVolumeClaim:
+            claimName: pvc-bdd
+      restartPolicy: Always
+      dnsPolicy: ClusterFirst
