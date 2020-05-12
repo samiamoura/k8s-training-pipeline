@@ -71,6 +71,7 @@ pipeline {
 
         stage('Ensure api is deployed and test it') {
             agent any
+
             steps {
               echo "Ensure application is deploy"
               sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
@@ -80,7 +81,7 @@ pipeline {
               def result = sh label: '', returnStdout: true, script: 'curl http://api-sami.formationk8.projet-davidson.fr'
 
               if (result != "Hello you!"){
-                exit 1 
+                sh "exit 1" 
               }
            }
         }
