@@ -68,7 +68,7 @@ pipeline {
             }
 
             steps {
-               sh "bash -c 'while [[ '$(curl -s -o /dev/null -w ''%{http_code}'' http://api-sami.formationk8.projet-davidson.fr/)' != "200" ]]; do sleep 5; done'"
+               sh "bash -c 'while [[ '\$(curl -s -o /dev/null -w ''%{http_code}'' http://api-sami.formationk8.projet-davidson.fr/)' != "200" ]]; do sleep 5; done'"
             }
 
             steps {
