@@ -1,3 +1,4 @@
+
 def buildAndPushDocker(workingdir, appname) {
     withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB_CREDENTIAL', passwordVariable: 'DOCKER_HUB_PWD', usernameVariable: 'DOCKER_HUB_LOGIN')]) {
         sh "cd $workingdir && docker build -t $appname . && " +
@@ -9,7 +10,7 @@ def buildAndPushDocker(workingdir, appname) {
 
 def kubectl(opt, namespace) {
     withCredentials ( [string(credentialsId: 'K8S_TOKEN', variable: 'K8S_TOKEN')] ) {
-        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace"
+        sh "export KUBERNETES_MASTER=https://104.199.68.113 &&  kubectl --insecure-skip-tls-verify=true --token='$K8S_TOKEN' $opt --namespace $namespace "
     }
 }
 
@@ -39,7 +40,10 @@ pipeline {
         }
 
         stage('Deploy on K8s') {
-            agent { docker { image 'bitnami/kubectl' } }
+            agent { docker {
+              image 'bitnami/kubectl'
+              args '--entrypoint='
+            } }
             steps {
                 deploy()
             }
