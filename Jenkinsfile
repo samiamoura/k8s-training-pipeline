@@ -39,6 +39,7 @@ pipeline {
             }
         }
 
+        /*
         stage('Deploy on K8s') {
             agent { docker {
               image 'bitnami/kubectl'
@@ -47,7 +48,17 @@ pipeline {
             steps {
                 deploy()
             }
+        }*/
+
+        stage('Deploy on K8s with Helm Chart') {
+            agent { docker {
+              image 'alpine/helm'
+              
+            } }
+            steps {
+                sh "helm install --debug final Helm"
+            }
         }
+        
     }
 }
-
