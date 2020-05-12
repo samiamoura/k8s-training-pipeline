@@ -64,7 +64,7 @@ pipeline {
 
         stage('Deploy on K8s with Helm Chart') {
             agent { docker {
-              image 'bitnami/kubectl'
+              image 'alpine/helm'
               args '--entrypoint='
             } }
             steps {
