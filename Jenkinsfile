@@ -56,6 +56,7 @@ pipeline {
               args '--entrypoint='
             } }
             steps {
+                sh "export KUBERNETES_MASTER=https://104.199.68.113"
                 sh "helm install --debug final Helm"
             }
         }
