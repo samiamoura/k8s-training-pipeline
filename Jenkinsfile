@@ -16,8 +16,7 @@ def kubectl(opt, namespace) {
 
 
 def deploy() {
-    sh "cd k8s"
-    kubectl('apply -f .', 'sami')
+    kubectl('apply -f k8s', 'sami')
 }
 
 pipeline {
