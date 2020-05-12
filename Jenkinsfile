@@ -25,7 +25,7 @@ def helm(opt) {
 }
 
 def action_helm(opt, chart) {
-    helm("$opt aplication $chart")
+    helm("$opt application $chart")
 }
 
 
