@@ -72,13 +72,11 @@ pipeline {
 
         stage('Ensure api is deployed and test it') {
             agent any
-              stage("Ensure application is deploy") {
                 steps {
                   echo "Ensure application is deploy"
                   sh label: '', script: 'timeout 300 bash -c \'while [[ "$(curl -s -o /dev/null -w \'\'%{http_code}\'\' http://api-sami.formationk8.projet-davidson.fr)" != "200" ]]; do sleep 5; done\' || false'
                 }
-             }
-          }
+        }
 
 
         /*
